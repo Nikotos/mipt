@@ -1,2 +1,2 @@
 # mipt
-some tacks for MIPT
+some tasks for MIPT
