@@ -33,7 +33,7 @@ int continuoslyWriteFromFileToPipe(int inputFileDescriptor, int pipeFileDescript
         return 1;
     }
     int writtenDataAmount = 0;
-    while ((writtenDataAmount = read(inputFileDescriptor, &globalStaticBuffer, BUFFER_SIZE)) &&  writtenDataAmount > 0) {
+    while ((writtenDataAmount = read(inputFileDescriptor, globalStaticBuffer, BUFFER_SIZE)) &&  writtenDataAmount > 0) {
         write(pipeFileDescriptor, globalStaticBuffer, writtenDataAmount);
     }
     return 0;
