@@ -10,7 +10,7 @@
 //------------------CONFIG----------------------
 #define BUFFER_SIZE 1024 //I mean symbols
 #define OUTPUT_FILENAME "output"
-char* globalStaticBuffer[BUFFER_SIZE];
+char globalStaticBuffer[BUFFER_SIZE];
 //----------------------------------------------
 
 
