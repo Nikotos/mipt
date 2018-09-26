@@ -35,12 +35,14 @@ int continuoslyWriteFromFileToPipe(int inputFileDescriptor, int pipeFileDescript
 
 int main(int argc, char** argv) {
     if (argc == 2) {
+        printf("Opening write side of fifo-pipe\n");
         //-------------SOME SETUP-----------------------------------------
         int connectionSettingPipe = open(FIFO_PATH, O_WRONLY);
         if (connectionSettingPipe == -1) {
             printf("Cant open fifo\n");
             return 1;
         }
+        printf("Connection via pipe established\n");
         int inputFileDescriptor = open(argv[1], O_RDONLY);
         if (inputFileDescriptor == -1) {
             printf("Cant create output file\n");

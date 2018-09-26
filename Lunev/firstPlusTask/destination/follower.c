@@ -32,12 +32,14 @@ int continuoslyReadFromPipeToFile(int pipeFileDescriptor, int outputFileDescript
 
 int main(int argc, char** argv) {
     if (argc == 2) {
+        printf("Opening read side of fifo-pipe\n");
         //-------------SOME SETUP----------------------------------------------
         int connectionSettingPipe = open(FIFO_PATH, O_RDONLY);
         if (connectionSettingPipe == -1) {
             printf("Cant open fifo\n");
             return 1;
         }
+        printf("Connection via pipe established\n");
         int outputFileDescriptor = open(argv[1], O_CREAT | O_WRONLY);
         if (outputFileDescriptor == -1) {
             printf("Cant create output file\n");
@@ -47,11 +49,10 @@ int main(int argc, char** argv) {
         int pid = 0;
         char dataFifoFullName[50];
         //----------------------------------------------------------------------
-        printf("trying to get streamers PID from fifo\n");
+        printf("trying to get streamers PID from fifo\n");   
         read(connectionSettingPipe, &pid, sizeof(int));
-        printf("recieving file from procces - [%d]\n", pid);
         sprintf(dataFifoFullName, "../dataFifo%d", pid);
-        
+        printf("Opening dataPipe - [%d]\n", pid);
         dataFifo = open(dataFifoFullName, O_RDONLY);
         if (dataFifo == -1) {
             printf("Cant open dataFifo!\n");
