@@ -50,7 +50,7 @@ int continuoslyReadFromPipeToFile(int pipeFileDescriptor, int outputFileDescript
     }
     int readDataAmount = 0;
     while ((readDataAmount = read(pipeFileDescriptor, &globalStaticBuffer, BUFFER_SIZE)) && readDataAmount > 0) {
-        write(outputFileDescriptor, &globalStaticBuffer, readDataAmount);
+        write(outputFileDescriptor, globalStaticBuffer, readDataAmount);
     }
     chmod(OUTPUT_FILENAME, 0000666);
     return 0;
