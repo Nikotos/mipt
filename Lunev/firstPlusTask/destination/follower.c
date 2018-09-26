@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
     if (argc == 2) {
         printf("Opening read side of fifo-pipe\n");
         //-------------SOME SETUP----------------------------------------------
-        int connectionSettingPipe = open(FIFO_PATH, O_RDONLY);
+        int connectionSettingPipe = open(FIFO_PATH, O_RDONLY | O_NONBLOCK);
         if (connectionSettingPipe == -1) {
             printf("Cant open fifo\n");
             return 1;
@@ -49,21 +49,27 @@ int main(int argc, char** argv) {
         int pid = 0;
         char dataFifoFullName[50];
         //----------------------------------------------------------------------
-        printf("trying to get streamers PID from fifo\n");   
+        printf("trying to get streamers PID from fifo\n");
         read(connectionSettingPipe, &pid, sizeof(int));
-        sprintf(dataFifoFullName, "../dataFifo%d", pid);
-        printf("Opening dataPipe - [%d]\n", pid);
-        dataFifo = open(dataFifoFullName, O_RDONLY);
-        if (dataFifo == -1) {
-            printf("Cant open dataFifo!\n");
-            return 1;
-        }
         
-        unlink(dataFifoFullName);
-                        
-        continuoslyReadFromPipeToFile(dataFifo, outputFileDescriptor);
-        chmod(argv[1], 0000666);
-
+        if(kill(pid, 0) != 0) {
+            printf("Oops, there was some trash in pipe, or such process doesn't exist anymore\n");
+        } else {
+            sprintf(dataFifoFullName, "../dataFifo%d", pid);
+            mkfifo(dataFifoFullName, 0644);
+            dataFifo = open(dataFifoFullName, O_RDONLY);
+            if (dataFifo == -1) {
+                printf("Cant open dataFifo!\n");
+                return 1;
+            }
+            printf("Opened dataPipe from process - [%d]\n", pid);
+            unlink(dataFifoFullName);
+            
+            printf("Statred getting data from data pipe\n");
+            continuoslyReadFromPipeToFile(dataFifo, outputFileDescriptor);
+            chmod(argv[1], 0000666);
+            printf("Got it!\n");
+        }
     } else {
         printf("Inappropriate amount of arguments!");
         return 1;

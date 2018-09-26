@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
     if (argc == 2) {
         printf("Opening write side of fifo-pipe\n");
         //-------------SOME SETUP-----------------------------------------
-        int connectionSettingPipe = open(FIFO_PATH, O_WRONLY);
+        int connectionSettingPipe = open(FIFO_PATH, O_WRONLY | O_NONBLOCK);
         if (connectionSettingPipe == -1) {
             printf("Cant open fifo\n");
             return 1;
@@ -60,7 +60,6 @@ int main(int argc, char** argv) {
         printf("I am process - [%d], dataFifo created!\n", pid);
         
         dataFifo = open(dataFifoFullName, O_WRONLY);
-        printf("%d", dataFifo);
         if (dataFifo == -1) {
             printf("Error while creating second fifo!\n");
             return 1;
@@ -68,6 +67,7 @@ int main(int argc, char** argv) {
         
         printf("I am process - [%d], started writing to data pipe\n", pid);
         continuoslyWriteFromFileToPipe(inputFileDescriptor, dataFifo);
+        printf("I am process - [%d], finished writing to data pipe\n", pid);
         
     } else {
         printf("Inappropriate amount of arguments!");
